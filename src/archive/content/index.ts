@@ -38,6 +38,12 @@ import { apparatus as cm003 } from '@/machines/cm-003-vending/content'
 import { apparatus as cm004 } from '@/machines/cm-004-broken-tool/content'
 import { apparatus as cm005 } from '@/machines/cm-005-bracket/content'
 import { apparatus as cm006 } from '@/machines/cm-006-again/content'
+import { apparatus as cm007 } from '@/machines/cm-007-windows/content'
+import { apparatus as cm008 } from '@/machines/cm-008-private/content'
+import { apparatus as cm009 } from '@/machines/cm-009-difference/content'
+import { apparatus as cm010 } from '@/machines/cm-010-expenditure/content'
+import { apparatus as cm011 } from '@/machines/cm-011-terms/content'
+import { apparatus as cm012 } from '@/machines/cm-012-observation/content'
 
 const SECTION_FILL: Readonly<Record<string, Partial<TextualApparatus>>> = {
   'cm-001-will': cm001,
@@ -46,6 +52,12 @@ const SECTION_FILL: Readonly<Record<string, Partial<TextualApparatus>>> = {
   'cm-004-broken-tool': cm004,
   'cm-005-bracket': cm005,
   'cm-006-again': cm006,
+  'cm-007-windows': cm007,
+  'cm-008-private': cm008,
+  'cm-009-difference': cm009,
+  'cm-010-expenditure': cm010,
+  'cm-011-terms': cm011,
+  'cm-012-observation': cm012,
 }
 
 const EMPTY_SECTIONS = {

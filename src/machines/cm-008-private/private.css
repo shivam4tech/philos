@@ -1,0 +1,144 @@
+.private {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gap-4) var(--gap-5);
+  gap: var(--gap-3);
+  background: var(--ink);
+  overflow-y: auto;
+}
+
+.private__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-4);
+}
+
+.private__phase {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+}
+
+.private__body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--gap-5);
+  align-items: start;
+}
+
+.private__sensation {
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-5) var(--gap-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+  align-items: center;
+  text-align: center;
+}
+
+.private__sign {
+  font-family: var(--font-mono);
+  font-size: 34px;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  text-shadow: 0 0 22px rgba(217, 164, 65, 0.25);
+}
+
+.private__context {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+
+.private__phasebox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-4);
+  align-items: flex-start;
+}
+
+.private__instruction {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  line-height: 1.9;
+  color: var(--text);
+  max-width: 56ch;
+}
+
+.private__row {
+  display: flex;
+  gap: var(--gap-2);
+  flex-wrap: wrap;
+}
+
+.private__hold {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  padding: var(--gap-4) var(--gap-5);
+  background: var(--panel-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
+  user-select: none;
+}
+
+.private__hold.is-holding {
+  border-color: var(--amber);
+  color: var(--amber);
+  transform: scale(0.985);
+}
+
+.private__note,
+.private__response {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  max-width: 58ch;
+}
+
+.private__note {
+  color: var(--text-faint);
+}
+
+.private__response {
+  color: var(--amber);
+  border-left: 2px solid var(--amber-dim);
+  padding-left: var(--gap-3);
+}
+
+.private__diary {
+  border-top: var(--hairline);
+  padding-top: var(--gap-3);
+}
+
+.private__diarylines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: var(--gap-2);
+}
+
+.private__diarylines p {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+@media (max-width: 860px) {
+  .private__body {
+    grid-template-columns: 1fr;
+  }
+}

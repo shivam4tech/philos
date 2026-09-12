@@ -170,6 +170,18 @@
   animation: cont-in 280ms var(--ease-out);
 }
 
+.cont-tag--replay {
+  color: var(--amber);
+  border-color: var(--amber-dim);
+  animation: replay-flicker 1.6s steps(2) infinite;
+}
+
+@keyframes replay-flicker {
+  0%, 92%, 100% { opacity: 1; }
+  94% { opacity: 0.55; }
+  97% { opacity: 0.85; }
+}
+
 @media (max-width: 640px) {
   .cont-card {
     left: var(--gap-3) !important;

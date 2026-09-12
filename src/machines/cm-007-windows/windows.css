@@ -1,0 +1,240 @@
+.windows {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gap-4) var(--gap-5);
+  gap: var(--gap-4);
+  background: var(--ink);
+  overflow-y: auto;
+}
+
+.windows__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-4);
+  flex-wrap: wrap;
+}
+
+.windows__channels {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--phosphor);
+}
+
+.windows__channels.is-violated {
+  color: var(--alert);
+  animation: windows-alarm 400ms var(--ease-out);
+}
+
+@keyframes windows-alarm {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.windows__room {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-4);
+}
+
+.windows__monad {
+  position: relative;
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+}
+
+.windows__monad.is-perturbed {
+  border-color: var(--alert);
+}
+
+.windows__monadhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--gap-2);
+}
+
+.windows__principle {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.windows__state {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  padding: var(--gap-4) 0;
+}
+
+.windows__statename {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  letter-spacing: 0.28em;
+  color: var(--text);
+  transition: color var(--t-med) var(--ease-out);
+}
+
+.windows__monad.is-perturbed .windows__statename {
+  color: var(--alert);
+  animation: state-jolt 200ms var(--ease-out);
+}
+
+@keyframes state-jolt {
+  0% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.windows__predicted {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+.windows__perturb {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.windows__perturb:hover:not(:disabled) {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
+.windows__perturb:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.windows__burst {
+  position: absolute;
+  inset: -2px;
+  border: 1px solid var(--alert);
+  border-radius: var(--radius);
+  pointer-events: none;
+  animation: burst-out 900ms var(--ease-out) forwards;
+}
+
+@keyframes burst-out {
+  from {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(194, 84, 58, 0.4);
+  }
+  to {
+    opacity: 0;
+    box-shadow: 0 0 0 18px rgba(194, 84, 58, 0);
+  }
+}
+
+.windows__lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: var(--gap-4);
+  flex: 1;
+  min-height: 220px;
+}
+
+.windows__feed,
+.windows__direct {
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+}
+
+.windows__feedlist {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  justify-content: flex-end;
+}
+
+.windows__feedline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  animation: feed-in 240ms var(--ease-out);
+}
+
+.windows__feedline b {
+  color: var(--text-faint);
+}
+
+.windows__feedline--a b { color: var(--blueprint); }
+.windows__feedline--b b { color: var(--amber); }
+.windows__feedline--c b { color: var(--phosphor); }
+
+.windows__echo {
+  font-style: normal;
+  color: var(--alert);
+  font-size: 8px;
+}
+
+@keyframes feed-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.windows__transmit {
+  display: flex;
+  gap: var(--gap-2);
+}
+
+.windows__transmit input {
+  flex: 1;
+  background: var(--ink-2);
+  border: var(--hairline);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 10px;
+}
+
+.windows__note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--alert);
+  min-height: 18px;
+}
+
+@media (max-width: 860px) {
+  .windows__room {
+    grid-template-columns: 1fr;
+  }
+
+  .windows__lower {
+    grid-template-columns: 1fr;
+  }
+}

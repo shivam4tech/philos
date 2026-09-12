@@ -1,0 +1,182 @@
+.difference {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gap-4) var(--gap-5);
+  gap: var(--gap-3);
+  background: var(--ink);
+  overflow-y: auto;
+}
+
+.difference__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-4);
+  flex-wrap: wrap;
+}
+
+.difference__stats {
+  display: flex;
+  gap: var(--gap-4);
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+
+.difference__stats .is-low {
+  color: var(--alert);
+}
+
+.difference__main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--gap-4);
+  min-height: 0;
+}
+
+.difference__bench,
+.difference__genealogy {
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+  align-items: center;
+}
+
+.difference__bench .btn {
+  margin-top: var(--gap-2);
+}
+
+.difference__specimen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-2);
+}
+
+.difference__glyph {
+  width: 64px;
+  height: 64px;
+  transition: transform var(--t-med) var(--ease-spring);
+}
+
+.difference__glyph--large {
+  width: 190px;
+  height: 190px;
+  animation: specimen-in 420ms var(--ease-spring);
+}
+
+@keyframes specimen-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.difference__speclabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+}
+
+.difference__sourceline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.difference__note {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  text-align: center;
+  max-width: 40ch;
+  line-height: 1.8;
+}
+
+.difference__genealogy {
+  align-items: stretch;
+}
+
+.difference__tree {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  padding: var(--gap-2) 0;
+}
+
+.difference__node {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+
+.difference__node:hover {
+  border-color: var(--line-strong);
+}
+
+.difference__node.is-selected {
+  border-color: var(--amber);
+  background: rgba(217, 164, 65, 0.05);
+}
+
+.difference__nodeid {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-faint);
+}
+
+.difference__resemblance {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--phosphor);
+  text-align: center;
+  line-height: 1.7;
+}
+
+.difference__verdict {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 16, 15, 0.8);
+  z-index: 30;
+  pointer-events: none;
+}
+
+.difference__verdict p {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+}
+
+@media (max-width: 860px) {
+  .difference__main {
+    grid-template-columns: 1fr;
+  }
+}

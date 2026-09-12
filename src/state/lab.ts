@@ -36,6 +36,8 @@ export interface SessionMetrics {
 export interface LabState {
   booted: boolean
   route: Route
+  /** recent route names, most recent last — used by the sequence-replay effect */
+  routeHistory: Route['name'][]
   ticker: TickerMessage[]
   contamination: ActiveContaminationEffect[]
   /** catalogue search placeholder stage (Lacan chain) */
@@ -48,6 +50,7 @@ export interface LabState {
 const initial: LabState = {
   booted: false,
   route: { name: 'entrance' },
+  routeHistory: [],
   ticker: [],
   contamination: [],
   searchStage: 0,
@@ -86,6 +89,7 @@ export function setLabRoute(route: Route): void {
   labStore.set((prev) => ({
     ...prev,
     route,
+    routeHistory: [...prev.routeHistory, route.name].slice(-6),
     metrics: { ...prev.metrics, navCount: prev.metrics.navCount + 1, lastInteractionAt: Date.now() },
   }))
 }

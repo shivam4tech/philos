@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { getLab, removeActiveEffect, useLab } from '@/state/lab'
+import { navigate, type Route } from '@/router/router'
 import { audio } from '@/audio/engine'
 import { useFx, fireFx } from '@/interact/micro'
 import './contamination.css'
@@ -39,10 +40,70 @@ export function ContaminationLayer() {
     if (byId.has('additional-request')) nodes.push(<AdditionalRequest key="ar" />)
     if (byId.has('contradictory-signage')) nodes.push(<ContradictorySignage key="cs" />)
     if (byId.has('institutional-drift')) nodes.push(<InstitutionalDrift key="id" />)
+    if (byId.has('sequence-replay')) nodes.push(<SequenceReplay key="sr" />)
     return nodes
   }, [lab.contamination])
 
   return <div className="contamination-layer" aria-live="off">{rendered}</div>
+}
+
+/**
+ * The visitor's recent route sequence repeats exactly. Input is suspended;
+ * the laboratory walks itself back through where you have been.
+ */
+function SequenceReplay() {
+  const history = getLab().routeHistory
+  const [step, setStep] = useState(0)
+  const path = useMemo(
+    () => [...new Set(history.filter((name) => name !== 'machine' && name !== 'entrance'))].slice(-4),
+    [history],
+  )
+
+  useEffect(() => {
+    const timers: number[] = []
+    path.forEach((name, index) => {
+      timers.push(
+        window.setTimeout(() => {
+          setStep(index + 1)
+          navigate(routeFromName(name))
+          audio.play('recurrence', { gain: 0.5 })
+        }, 900 * (index + 1)),
+      )
+    })
+    timers.push(
+      window.setTimeout(
+        () => {
+          dismissEffect('sequence-replay')
+          navigate({ name: 'catalogue' })
+        },
+        900 * (path.length + 1),
+      ),
+    )
+    return () => timers.forEach((t) => window.clearTimeout(t))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- walk the sequence once
+  }, [])
+
+  if (path.length === 0) return null
+  return (
+    <div className="cont-tag cont-tag--replay" role="status">
+      IDENTICAL SEQUENCE REPLAY — {Math.min(step, path.length)}/{path.length} — INPUT SUSPENDED
+    </div>
+  )
+}
+
+function routeFromName(name: Route['name']): Route {
+  switch (name) {
+    case 'facility':
+      return { name: 'facility' }
+    case 'record':
+      return { name: 'record' }
+    case 'archive':
+      return { name: 'archive' }
+    case 'settings':
+      return { name: 'settings' }
+    default:
+      return { name: 'catalogue' }
+  }
 }
 
 /** A routine control stops working and becomes conspicuous. */
