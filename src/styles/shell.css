@@ -231,11 +231,45 @@
   }
 
   .statusbar {
-    gap: var(--gap-3);
-    padding: 0 var(--gap-3);
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 44px;
+    padding: var(--gap-2) var(--gap-3);
+    row-gap: 4px;
+  }
+
+  .statusbar__brand {
+    order: 1;
+  }
+
+  .statusbar__spacer {
+    display: none;
   }
 
   .statusbar__crumb {
     display: none;
+  }
+
+  .statusbar__nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .statusbar__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .statusbar__nav .btn {
+    flex-shrink: 0;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 6px 7px;
+  }
+
+  .statusbar__audio {
+    order: 2;
+    margin-left: auto;
   }
 }

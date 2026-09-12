@@ -164,7 +164,7 @@ export default function Machine() {
 /** Clause/definition text with clickable capitalized terms. */
 function TermText({ text, onOpen }: { text: string; onOpen: (term: string) => void }) {
   const known = useMemo(() => new Set(TERMS.map((t) => t.term)), [])
-  const parts = text.split(/(\b[A-ZÉÀ-ÿ][A-ZÉÀ-ÿ’ -]+\b)/g)
+  const parts = text.split(/(\b[A-ZÉÀ-ÿ][A-ZÉÀ-ÿ’-]*\b)/g)
   return (
     <>
       {parts.map((part, i) =>

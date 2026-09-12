@@ -48,6 +48,7 @@ export default function Machine() {
   /* initial need */
   useEffect(() => {
     setNeeds([{ key: ++keyRef.current, def: NEED_CATALOG[0], bornAt: Date.now() }])
+    setLog(['THE ENGINE PRESENTS ITS FIRST DEFICIENCY.'])
   }, [])
 
   /* decay + stillness + idle observation */

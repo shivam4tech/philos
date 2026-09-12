@@ -265,25 +265,30 @@ export default function Machine() {
       <div className="btool__keys">
         <Microlabel>KEYBOARD OPERATION (EXEMPT FROM BREAKDOWN)</Microlabel>
         <div className="btool__keysrow">
-          {ZONES.map((zone, zoneId) => (
-            <select
-              key={zone.id}
-              aria-label={`Place crate on ${zone.label}`}
-              onChange={(e) => {
-                if (e.target.value !== '') keyboardPlace(Number(e.target.value), zoneId)
-              }}
-              value=""
-            >
-              <option value="" disabled>
-                PLACE CRATE ON {zone.label}…
-              </option>
-              {unplaced.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.code}
+          {ZONES.map((zone, zoneId) => {
+            const zoneUsed = crates.filter((c) => c.placedZone === zoneId).length
+            const fits = unplaced.slice(0, Math.max(0, 2 - zoneUsed))
+            return (
+              <select
+                key={zone.id}
+                aria-label={`Place crate on ${zone.label}`}
+                onChange={(e) => {
+                  if (e.target.value !== "") keyboardPlace(Number(e.target.value), zoneId)
+                }}
+                value=""
+                disabled={fits.length === 0}
+              >
+                <option value="" disabled>
+                  {fits.length === 0 ? `${zone.label} IS FULL` : `PLACE CRATE ON ${zone.label}…`}
                 </option>
-              ))}
-            </select>
-          ))}
+                {fits.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.code}
+                  </option>
+                ))}
+              </select>
+            )
+          })}
         </div>
       </div>
 

@@ -16,7 +16,7 @@ const LAYOUT: Record<ZoneId, { x: number; y: number; w: number; h: number }> = {
   'east-wing': { x: 610, y: 50, w: 250, h: 210 },
   'lower-archive': { x: 40, y: 310, w: 250, h: 210 },
   'still-room': { x: 320, y: 310, w: 115, h: 100 },
-  restricted: { x: 465, y: 310, w: 115, h: 100 },
+  restricted: { x: 452, y: 310, w: 142, h: 100 },
   'service-corridor': { x: 610, y: 310, w: 250, h: 210 },
 }
 
@@ -83,13 +83,13 @@ export function FacilityMap() {
                 className="facilitymap__zonetitle"
                 onClick={() => !restricted && navigate({ name: 'catalogue' })}
               >
-                {zone.title}
+                {restricted ? 'RESTRICTED' : zone.title}
               </text>
               <text x={layout.x + 10} y={layout.y + 34} className="facilitymap__zonesub">
                 {sealed
                   ? 'ACCESS NOT PREAUTHORIZED'
                   : restricted
-                    ? 'ACCESS PROVISIONAL — OBSERVATION BEGINS'
+                    ? 'ACCESS PROVISIONAL'
                     : zone.subtitle}
               </text>
 
@@ -121,7 +121,7 @@ export function FacilityMap() {
                     >
                       <rect x={x - 7} y={y - 7} width={26} height={14} className="facilitymap__dotbox" />
                       <text x={x + 6} y={y + 3} textAnchor="middle" className="facilitymap__dotcode">
-                        {machine.code.replace('CM-', '').replace('MA-', '')}
+                        {machine.code.slice(-2)}
                       </text>
                       <title>{`${machine.code} — ${machine.title}`}</title>
                     </g>
