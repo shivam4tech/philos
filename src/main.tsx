@@ -7,6 +7,8 @@ import '@fontsource/ibm-plex-sans/400.css'
 import '@fontsource/ibm-plex-sans/600.css'
 import './styles/tokens.css'
 import './styles/base.css'
+import './styles/shell.css'
+import './interact/micro.css'
 import { App } from './App'
 
 const container = document.getElementById('root')

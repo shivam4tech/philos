@@ -1,0 +1,261 @@
+.mframe {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  position: relative;
+}
+
+.mframe__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-4);
+  height: 44px;
+  padding: 0 var(--gap-4);
+  border-bottom: var(--hairline);
+  background: var(--ink-2);
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.mframe__code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--amber);
+}
+
+.mframe__title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.mframe__thinker {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+}
+
+.mframe__status {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  color: var(--phosphor);
+}
+
+.mframe__status--unfortunately-functioning {
+  color: var(--amber);
+}
+
+.mframe__status--restricted {
+  color: var(--alert);
+}
+
+.mframe__spacer {
+  flex: 1;
+}
+
+.mframe__controls {
+  display: flex;
+  gap: var(--gap-1);
+}
+
+.mframe__controls .btn {
+  padding: 6px 9px;
+  font-size: 9.5px;
+}
+
+.mframe__stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: auto;
+}
+
+.mframe__mount {
+  height: 100%;
+  animation: machine-in 400ms var(--ease-out);
+}
+
+@keyframes machine-in {
+  from {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.mframe__energizing {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-3);
+  background: var(--ink);
+}
+
+.mframe__energizingcode {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+}
+
+.mframe__scanline {
+  width: 160px;
+  height: 2px;
+  background: var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+
+.mframe__scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform: translateX(-100%);
+  animation: scan 0.9s var(--ease-out) infinite;
+}
+
+@keyframes scan {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.mframe__bootveil {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: var(--ink);
+  animation: boot-veil 0.9s var(--ease-out) forwards;
+}
+
+@keyframes boot-veil {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+.mframe__completion {
+  position: absolute;
+  left: var(--gap-4);
+  right: var(--gap-4);
+  bottom: var(--gap-4);
+  z-index: 25;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-4);
+  flex-wrap: wrap;
+  background: color-mix(in srgb, var(--ink-2) 96%, transparent);
+  border: 1px solid var(--amber-dim);
+  border-radius: var(--radius);
+  padding: var(--gap-3) var(--gap-4);
+  animation: cont-in 300ms var(--ease-out);
+}
+
+.mframe__completionevent {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  margin-top: 2px;
+}
+
+.mframe__completionnote {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--phosphor);
+  margin-top: 4px;
+}
+
+.mframe__completionactions {
+  display: flex;
+  gap: var(--gap-2);
+  flex-wrap: wrap;
+}
+
+.mframe__text {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  bottom: 0;
+  width: min(520px, 92vw);
+  z-index: 24;
+  background: var(--ink-2);
+  border-left: var(--hairline);
+  display: flex;
+  flex-direction: column;
+  animation: text-in 260ms var(--ease-out);
+}
+
+@keyframes text-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.mframe__texthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--gap-3) var(--gap-4);
+  border-bottom: var(--hairline);
+}
+
+.mframe__textbody {
+  overflow-y: auto;
+  padding: var(--gap-4);
+}
+
+.mframe__nocontent {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+@media (max-width: 720px) {
+  .mframe__bar {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 44px;
+    padding: var(--gap-2) var(--gap-3);
+    row-gap: 4px;
+  }
+
+  .mframe__thinker {
+    display: none;
+  }
+
+  .mframe__text {
+    width: 100vw;
+    top: 0;
+  }
+
+  .mframe__completion {
+    left: var(--gap-2);
+    right: var(--gap-2);
+    bottom: var(--gap-2);
+  }
+}

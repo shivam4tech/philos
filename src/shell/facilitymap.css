@@ -1,0 +1,77 @@
+.facilitymap__svg {
+  width: 100%;
+  height: auto;
+  border: var(--hairline);
+  background: var(--ink-2);
+  border-radius: var(--radius);
+}
+
+.facilitymap__hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+
+.facilitymap__zonetitle {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  fill: var(--text);
+  cursor: pointer;
+}
+
+.facilitymap__zonetitle:hover {
+  fill: var(--amber);
+}
+
+.facilitymap__zonesub {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  fill: var(--text-faint);
+}
+
+.facilitymap__sealed {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  fill: var(--alert-dim);
+}
+
+.facilitymap__dotbox {
+  fill: var(--panel-2);
+  stroke: var(--line-strong);
+}
+
+.facilitymap__dot {
+  cursor: pointer;
+}
+
+.facilitymap__dot:hover .facilitymap__dotbox,
+.facilitymap__dot:focus-visible .facilitymap__dotbox {
+  stroke: var(--amber);
+  fill: var(--panel);
+}
+
+.facilitymap__dotcode {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  fill: var(--text-dim);
+  pointer-events: none;
+}
+
+.facilitymap__dot.is-visited .facilitymap__dotbox {
+  stroke: var(--phosphor-dim);
+}
+
+.facilitymap__dot.is-visited .facilitymap__dotcode {
+  fill: var(--phosphor);
+}
+
+.facilitymap__legend {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  fill: var(--text-faint);
+}
