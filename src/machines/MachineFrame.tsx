@@ -2,6 +2,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 
 import { getMachine, type MachineMeta } from '@/machines/registry'
 import { getMachineComponent } from '@/machines/machineComponents'
+import { hybridFor } from '@/machines/chamber'
 import { getApparatusContent } from '@/archive/content'
 import { MachineContext } from '@/machines/context'
 import {
@@ -19,7 +20,7 @@ import { attemptContamination } from '@/contamination/engine'
 import { audio, BASE_SCENE } from '@/audio/engine'
 import { useSettings, setMuted } from '@/state/settings'
 import { getSettings } from '@/state/settings'
-import { navigate } from '@/router/router'
+import { navigate, useRoute } from '@/router/router'
 import { ErrorBoundary } from '@/shell/ErrorBoundary'
 import { TextualApparatusView } from '@/shell/TextualApparatusView'
 import { Btn, Microlabel } from '@/shell/ui'
@@ -42,8 +43,11 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
   const [textOpen, setTextOpen] = useState(false)
   const [resetCount, setResetCount] = useState(0)
   const [completion, setCompletion] = useState<{ event: string; fresh: string[] } | null>(null)
+  const [modeId, setModeId] = useState<string | null>(null)
   const failures = useRef(0)
   const machineId = meta?.id
+  const route = useRoute()
+  const contaminantId = route.name === 'machine' ? (route.contaminant ?? null) : null
 
   useEffect(() => {
     const machine = machineId ? getMachine(machineId) : undefined
@@ -75,6 +79,7 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
   const completed = (record.machines[meta?.id ?? '']?.completions ?? 0) > 0
   const content = meta ? getApparatusContent(meta.id) : undefined
   const Component = meta ? getMachineComponent(meta.componentKey) : null
+  const hybrid = meta && contaminantId ? hybridFor(meta.id, contaminantId) : undefined
 
   const api = useMemo(
     () => ({
@@ -82,9 +87,16 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
       complete: (event: string) => {
         if (!meta || completion) return
         const fresh = completeMachine(meta.id, event)
+        if (contaminantId) addCounter('chamberRuns')
+        if (modeId) noteModeCompleted(meta.id, modeId)
         setCompletion({ event, fresh })
         audio.play('complete')
-        pushTicker(`APPARATUS ${meta.code} — SESSION CONCLUDED`, 'contamination')
+        pushTicker(
+          contaminantId
+            ? `INTER-PHILOSOPHICAL REACTION CONCLUDED — ${meta.code} × ${contaminantId.toUpperCase()}`
+            : `APPARATUS ${meta.code} — SESSION CONCLUDED`,
+          'contamination',
+        )
         if (fresh.length > 0) {
           window.setTimeout(() => audio.play('contamination', { gain: 0.6 }), 900)
         }
@@ -104,14 +116,16 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
         audio.play('secret')
         pushTicker(`UNAUTHORIZED PROCEDURE DETECTED — RECORD ${code} — ${classification}`, 'secret')
       },
-      noteMode: (modeId: string) => {
-        if (meta) noteModeCompleted(meta.id, modeId)
+      noteMode: (noteId: string) => {
+        if (meta) noteModeCompleted(meta.id, noteId)
       },
       play: (name: Parameters<typeof audio.play>[0], gain?: number) =>
         audio.play(name, gain !== undefined ? { gain } : undefined, 'machine'),
       completed,
+      modeId,
+      contaminantId,
     }),
-    [meta, completed, completion],
+    [meta, completed, completion, modeId, contaminantId],
   )
 
   const doReset = useCallback(() => {
@@ -138,8 +152,33 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
           <span className={`mframe__status mframe__status--${meta.status.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
             {meta.status}
           </span>
+          {hybrid && (
+            <span className="mframe__hybrid" title={hybrid.mechanism}>
+              ⚉ {hybrid.title}
+            </span>
+          )}
           <span className="mframe__spacer" />
           <div className="mframe__controls">
+            {meta.modes && completed && (
+              <select
+                className="mframe__modeselect"
+                aria-label="Interpretation mode"
+                value={modeId ?? ''}
+                onChange={(e) => {
+                  setModeId(e.target.value || null)
+                  setResetCount((n) => n + 1)
+                  setCompletion(null)
+                  audio.play('toggle', { gain: 0.5 })
+                }}
+              >
+                <option value="">STANDARD RUN</option>
+                {meta.modes.map((mode) => (
+                  <option key={mode.id} value={mode.id}>
+                    {mode.label}
+                  </option>
+                ))}
+              </select>
+            )}
             <Btn variant="ghost" onClick={() => setTextOpen((v) => !v)}>
               {textOpen ? 'CLOSE TEXT' : 'APPARATUS TEXT'}
             </Btn>
@@ -171,6 +210,7 @@ function MachineFrame({ meta }: { meta: MachineMeta | undefined }) {
             meta={meta}
             event={completion.event}
             fresh={completion.fresh}
+            hybrid={hybrid}
             onText={() => setTextOpen(true)}
           />
         )}
@@ -227,11 +267,13 @@ function CompletionBanner({
   meta,
   event,
   fresh,
+  hybrid,
   onText,
 }: {
   meta: MachineMeta
   event: string
   fresh: string[]
+  hybrid?: { title: string; note: string }
   onText: () => void
 }) {
   return (
@@ -244,6 +286,7 @@ function CompletionBanner({
             CONTAMINATION VECTORS UPDATED (+{fresh.length}). THE FACILITY WILL REMEMBER THIS.
           </p>
         )}
+        {hybrid && <p className="mframe__hybridnote">{hybrid.note}</p>}
       </div>
       <div className="mframe__completionactions">
         <Btn variant="primary" onClick={() => navigate({ name: 'catalogue' })}>

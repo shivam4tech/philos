@@ -7,7 +7,7 @@
  *   cml.corrupt-backup    last unreadable payload, for forensics
  */
 
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
 
 const RECORD_KEY = 'cml.research-record'
 const SETTINGS_KEY = 'cml.settings'
@@ -59,6 +59,8 @@ export interface ResearchRecord {
   updatedAt: number
   entered: boolean
   designation: Designation
+  /** set when the visitor has passed through the Observation Deck */
+  observingAcknowledged: boolean
   machines: Record<string, MachineRecord>
   counters: ResearchCounters
   contamination: ContaminationState
@@ -72,6 +74,7 @@ export function emptyRecord(now = Date.now()): ResearchRecord {
     updatedAt: now,
     entered: false,
     designation: 'UNREGISTERED',
+    observingAcknowledged: false,
     machines: {},
     counters: {
       sessions: 0,
@@ -129,7 +132,16 @@ export type RawPayload = Record<string, unknown>
  * Registered migrations: schemaVersion N → N+1. Extend as the schema evolves;
  * `migrate` walks the chain so old saves never brick the app.
  */
-export const MIGRATIONS: ReadonlyMap<number, (raw: RawPayload) => RawPayload> = new Map()
+export const MIGRATIONS: ReadonlyMap<number, (raw: RawPayload) => RawPayload> = new Map([
+  [
+    1,
+    (raw) => ({
+      ...raw,
+      schemaVersion: 2,
+      observingAcknowledged: typeof raw['observingAcknowledged'] === 'boolean' ? raw['observingAcknowledged'] : false,
+    }),
+  ],
+])
 
 export function migrate(raw: RawPayload): RawPayload {
   let current = raw
@@ -219,6 +231,7 @@ export function repairRecord(raw: RawPayload, now = Date.now()): ResearchRecord 
     entered: bool(raw['entered'], false),
     designation:
       designation === 'OBSERVED' || designation === 'APPARATUS' ? designation : 'UNREGISTERED',
+    observingAcknowledged: bool(raw['observingAcknowledged'], false),
     machines,
     counters,
     contamination: {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useMachine } from '@/machines/context'
 import { Btn, Microlabel } from '@/shell/ui'
 import {
+  CHAIN_QUESTIONS,
   CRITERION_CHALLENGES,
   EPISODES,
   LINES,
@@ -11,7 +12,7 @@ import {
 } from './machine'
 import './private.css'
 
-type Phase = 'ostension' | 'recurrence' | 'criteria' | 'practice' | 'complete'
+type Phase = 'ostension' | 'recurrence' | 'criteria' | 'practice' | 'chains' | 'complete'
 
 export default function Machine() {
   const api = useMachine()
@@ -78,12 +79,30 @@ export default function Machine() {
     api.play('semantic-shift', 0.6)
     if (useIndex + 1 >= USE_EXERCISES.length) {
       window.setTimeout(() => {
-        setPhase('complete')
-        api.play('complete', 0.6)
-        api.complete('private:criteria-established')
+        if (api.contaminantId === 'cm-011-terms') {
+          setPhase('chains')
+        } else {
+          setPhase('complete')
+          api.play('complete', 0.6)
+          api.complete('private:criteria-established')
+        }
       }, 1800)
     } else {
       setUseIndex((i) => i + 1)
+    }
+  }
+
+  /* WITTGENSTEIN × DERRIDA: every settlement opens further distinctions */
+  const [chainIndex, setChainIndex] = useState(0)
+  const chain = CHAIN_QUESTIONS[Math.min(chainIndex, CHAIN_QUESTIONS.length - 1)]
+  const answerChain = () => {
+    api.play('semantic-shift', 0.5)
+    if (chainIndex + 1 >= CHAIN_QUESTIONS.length) {
+      setPhase('complete')
+      api.play('complete', 0.6)
+      api.complete('private:contaminated-session')
+    } else {
+      setChainIndex((i) => i + 1)
     }
   }
 
@@ -181,9 +200,32 @@ export default function Machine() {
           </div>
         )}
 
+        {phase === 'chains' && (
+          <div className="private__phasebox">
+            <p className="private__instruction">{chain.question}</p>
+            <div className="private__row">
+              {chain.options.map((option) => (
+                <Btn key={option} onClick={answerChain}>
+                  {option}
+                </Btn>
+              ))}
+            </div>
+            <p className="private__note">
+              DISTINCTION {chainIndex + 1} OF {CHAIN_QUESTIONS.length}. EACH ANSWER IS WORKABLE AND EACH OPENS ANOTHER.
+            </p>
+            {phase === 'chains' && chainIndex === CHAIN_QUESTIONS.length - 1 && (
+              <p className="private__response">{LINES.chainDone}</p>
+            )}
+          </div>
+        )}
+
         {phase === 'complete' && (
           <div className="private__phasebox">
-            <p className="private__response">{LINES.criteriaEstablished}</p>
+            <p className="private__response">
+              {api.contaminantId === 'cm-011-terms'
+                ? LINES.chainDone
+                : LINES.criteriaEstablished}
+            </p>
             <p className="private__note">
               THE DIARY REMAINS OPEN. IT IS NO LONGER PRIVATE IN THE SENSE THAT FAILED.
             </p>

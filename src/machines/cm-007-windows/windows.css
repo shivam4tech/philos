@@ -229,6 +229,41 @@
   min-height: 18px;
 }
 
+/* Leibniz × Foucault: analytics panel */
+.windows__predictions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.windows__prediction {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0;
+}
+
+.windows__prediction b {
+  color: var(--phosphor);
+  font-weight: 500;
+}
+
+.windows__question {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  line-height: 1.8;
+}
+
+.windows__stance {
+  display: flex;
+  gap: var(--gap-2);
+  flex-wrap: wrap;
+}
+
 @media (max-width: 860px) {
   .windows__room {
     grid-template-columns: 1fr;

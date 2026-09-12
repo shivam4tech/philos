@@ -128,6 +128,10 @@ export function noteModeCompleted(machineId: string, modeId: string): void {
   })
 }
 
+export function acknowledgeObservation(): void {
+  update((record) => ({ ...record, observingAcknowledged: true }))
+}
+
 export function addCounter(counter: keyof ResearchCounters, amount = 1): void {
   update((record) => ({
     ...record,

@@ -1,0 +1,67 @@
+.zeno {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+}
+
+.zeno__head {
+  padding: var(--gap-3) var(--gap-5);
+  border-bottom: var(--hairline);
+}
+
+.zeno__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-5);
+  padding: var(--gap-6);
+}
+
+.zeno__instruction {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  line-height: 2;
+  color: var(--text-dim);
+  text-align: center;
+  max-width: 60ch;
+}
+
+.zeno__bar {
+  position: relative;
+  width: min(560px, 90%);
+  height: 22px;
+  border: 1px solid var(--line-strong);
+  background: var(--ink-2);
+}
+
+.zeno__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+  transition: width 300ms var(--ease-out);
+}
+
+.zeno__gapmarker {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 1px;
+  background: var(--text-dim);
+}
+
+.zeno__readout {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--amber);
+  letter-spacing: 0.1em;
+}
+
+.zeno__count {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}

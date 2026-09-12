@@ -1,0 +1,93 @@
+.deck {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-4);
+  padding: var(--gap-6);
+  text-align: center;
+  overflow-y: auto;
+}
+
+.deck__title {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: var(--amber);
+}
+
+.deck__reclass {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  line-height: 2.2;
+  color: var(--text-dim);
+}
+
+.deck__reclass b {
+  color: var(--amber);
+  font-weight: 500;
+}
+
+.deck__lead {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--text-dim);
+  max-width: 62ch;
+}
+
+.deck__metrics {
+  width: min(560px, 100%);
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.deck__metrics div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap-4);
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
+}
+
+.deck__metrics dt {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+
+.deck__metrics dd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+  text-align: right;
+}
+
+.deck__verdict {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  line-height: 2.2;
+  color: var(--text);
+  max-width: 60ch;
+  margin-top: var(--gap-3);
+}
+
+.deck__note {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}

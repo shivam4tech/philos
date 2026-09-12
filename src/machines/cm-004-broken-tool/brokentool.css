@@ -210,6 +210,77 @@
   padding: 7px 10px;
 }
 
+/* Heidegger × Marx: provenance ledger */
+.btool__ledger {
+  border: 1px solid var(--phosphor-dim);
+  border-radius: var(--radius);
+  background: rgba(143, 191, 159, 0.03);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+}
+
+.btool__ledgerrow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-3);
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0;
+  flex-wrap: wrap;
+}
+
+.btool__ledgercode {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--phosphor);
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.btool__ledgerfield {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  flex: 1;
+  min-width: 200px;
+}
+
+.btool__stamp {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--phosphor);
+  border: 1px solid var(--phosphor-dim);
+  padding: 3px 8px;
+  transform: rotate(-4deg);
+}
+
+.btool__stampbtn {
+  background: transparent;
+  border: 1px dashed var(--phosphor-dim);
+  border-radius: var(--radius);
+  color: var(--phosphor);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.btool__stampbtn:hover {
+  border-style: solid;
+  border-color: var(--phosphor);
+}
+
+.btool__ledgerhint {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
 .btool__verdict {
   position: absolute;
   inset: 0;

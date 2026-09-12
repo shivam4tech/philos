@@ -45,6 +45,22 @@
   text-align: center;
 }
 
+.observation__percentile {
+  border: 1px solid var(--amber-dim);
+  border-radius: var(--radius);
+  background: rgba(217, 164, 65, 0.05);
+  padding: var(--gap-3) var(--gap-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  line-height: 1.9;
+  color: var(--amber);
+}
+
+.observation__percentile b {
+  font-size: 13px;
+}
+
 .observation__task {
   flex: 1;
   border: var(--hairline);

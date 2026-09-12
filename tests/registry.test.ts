@@ -59,15 +59,9 @@ describe('machine registry integrity', () => {
     expect(machinesInZone('restricted')).toHaveLength(1)
   })
 
-  it('all twelve apparatuses are implemented; secret + micros resolve via fallback', () => {
-    const implemented = new Set([
-      'cm-001-will', 'cm-002-desire', 'cm-003-vending', 'cm-004-broken-tool',
-      'cm-005-bracket', 'cm-006-again', 'cm-007-windows', 'cm-008-private',
-      'cm-009-difference', 'cm-010-expenditure', 'cm-011-terms', 'cm-012-observation',
-    ])
+  it('every registered apparatus is implemented and resolvable', () => {
     for (const m of MACHINES) {
-      expect(isComponentImplemented(m.componentKey)).toBe(implemented.has(m.componentKey))
-      // resolution must never fail — fallback = offline apparatus
+      expect(isComponentImplemented(m.componentKey), m.componentKey).toBe(true)
       expect(() => getMachineComponent(m.componentKey)).not.toThrow()
     }
   })

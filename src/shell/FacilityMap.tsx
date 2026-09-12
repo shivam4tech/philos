@@ -32,6 +32,8 @@ const DOT_GRID: Array<[number, number]> = [
 
 export function FacilityMap() {
   const record = useRecord()
+  const total = Object.values(record.machines).reduce((n, m) => n + m.completions, 0)
+  const restrictedUnsealed = total >= 3
 
   return (
     <div className="page facilitymap">
@@ -63,6 +65,7 @@ export function FacilityMap() {
           const layout = LAYOUT[zone.id]
           const machines = machinesInZone(zone.id)
           const restricted = zone.id === 'restricted'
+          const sealed = restricted && !restrictedUnsealed
           return (
             <g key={zone.id} className={`facilitymap__zone${restricted ? ' facilitymap__zone--restricted' : ''}`}>
               <rect
@@ -71,8 +74,8 @@ export function FacilityMap() {
                 width={layout.w}
                 height={layout.h}
                 fill="var(--ink-2)"
-                stroke={restricted ? 'var(--alert-dim)' : 'var(--line-strong)'}
-                strokeDasharray={restricted ? '5 5' : undefined}
+                stroke={sealed ? 'var(--alert-dim)' : 'var(--line-strong)'}
+                strokeDasharray={sealed ? '5 5' : undefined}
               />
               <text
                 x={layout.x + 10}
@@ -83,10 +86,14 @@ export function FacilityMap() {
                 {zone.title}
               </text>
               <text x={layout.x + 10} y={layout.y + 34} className="facilitymap__zonesub">
-                {restricted ? 'ACCESS NOT PREAUTHORIZED' : zone.subtitle}
+                {sealed
+                  ? 'ACCESS NOT PREAUTHORIZED'
+                  : restricted
+                    ? 'ACCESS PROVISIONAL — OBSERVATION BEGINS'
+                    : zone.subtitle}
               </text>
 
-              {restricted ? (
+              {sealed ? (
                 <text
                   x={layout.x + layout.w / 2}
                   y={layout.y + layout.h / 2 + 4}
@@ -114,7 +121,7 @@ export function FacilityMap() {
                     >
                       <rect x={x - 7} y={y - 7} width={26} height={14} className="facilitymap__dotbox" />
                       <text x={x + 6} y={y + 3} textAnchor="middle" className="facilitymap__dotcode">
-                        {machine.code.replace('CM-', '')}
+                        {machine.code.replace('CM-', '').replace('MA-', '')}
                       </text>
                       <title>{`${machine.code} — ${machine.title}`}</title>
                     </g>

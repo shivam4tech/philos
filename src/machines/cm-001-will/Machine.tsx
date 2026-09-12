@@ -40,6 +40,11 @@ export default function Machine() {
   const keyRef = useRef(0)
   const [meterRef] = useFx<HTMLDivElement>()
 
+  /* DESIRE CONTAMINATION (Schopenhauer × Lacan): need / demand / desire */
+  const contaminated = api.contaminantId === 'cm-002-desire'
+  const [demandMeter, setDemandMeter] = useState(0)
+  const [received, setReceived] = useState(0)
+
   /* initial need */
   useEffect(() => {
     setNeeds([{ key: ++keyRef.current, def: NEED_CATALOG[0], bornAt: Date.now() }])
@@ -99,7 +104,34 @@ export default function Machine() {
     (need: NeedInstance) => {
       if (stillness) return
       lastSatisfyAt.current = Date.now()
-      setNeeds((prev) => prev.filter((n) => n.key !== need.key))
+      const kind = needKind(need.key)
+
+      if (contaminated) {
+        /* DESIRE: the object is received; the variable does not decrease */
+        if (kind === 'desire') {
+          setReceived((r) => {
+            const next = r + 1
+            if (next === 3) {
+              setLog((l) => ['YOU RECEIVED THE OBJECT. WHY HAS THE VARIABLE NOT DECREASED?', ...l].slice(0, 7))
+            }
+            if (next >= 5 && !completionFired.current) {
+              completionFired.current = true
+              api.complete('will:contaminated-session')
+            }
+            return next
+          })
+          setLog((l) => [`OBJECT RECEIVED (${need.def.label}). DISPLACEMENT PERSISTS.`, ...l].slice(0, 7))
+          api.play('contradiction', 0.5)
+          return
+        }
+        if (kind === 'demand') {
+          setDemandMeter((d) => Math.min(100, d + 30))
+          setLog((l) => ['THE DEMAND WAS SATISFIED. THE DEMAND HAS RISEN.', ...l].slice(0, 7))
+          api.play('invalid', 0.4)
+        }
+      }
+
+      setNeeds((prev) => (kind === 'desire' && contaminated ? prev : prev.filter((n) => n.key !== need.key)))
       setSatisfied((s) => {
         const next = s + 1
         const nextStage = stageFor(next)
@@ -110,7 +142,7 @@ export default function Machine() {
         return next
       })
       setRelief((r) => {
-        const target = Math.min(100, r + RELIEF_PER_SATISFY)
+        const target = Math.min(100, r + (contaminated && kind === 'demand' ? 8 : RELIEF_PER_SATISFY))
         fireFx(meterRef.current, 'pulse')
         return target
       })
@@ -129,13 +161,20 @@ export default function Machine() {
       )
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- stage/satisfied read live via refs
-    [stage, stillness],
+    [stage, stillness, contaminated],
   )
 
   const satisfiedRef = useRef(satisfied)
+  const completionFired = useRef(false)
   useEffect(() => {
     satisfiedRef.current = satisfied
   }, [satisfied])
+
+  /* contamination: needs cycle through NEED / DEMAND / DESIRE by key */
+  function needKind(key: number): 'need' | 'demand' | 'desire' {
+    if (!contaminated) return 'need'
+    return (['need', 'demand', 'desire'] as const)[key % 3]
+  }
 
   /* spontaneous want generation at the top end */
   useEffect(() => {
@@ -243,10 +282,36 @@ export default function Machine() {
 
       <div className={`will__grid will__grid--stage${stage}`}>
         {needs.map((need) => (
-          <NeedPanel key={need.key} need={need} onSatisfy={() => satisfy(need)} />
+          <NeedPanel
+            key={need.key}
+            need={need}
+            kind={contaminated ? needKind(need.key) : undefined}
+            onSatisfy={() => satisfy(need)}
+          />
         ))}
         {needs.length === 0 && <p className="will__empty">GENERATING DEFICIENCY…</p>}
       </div>
+
+      {contaminated && (
+        <div className="will__lacan">
+          <div className="will__meterblock">
+            <Microlabel>NEED</Microlabel>
+            <span className="will__bigvalue">FLUCTUATING</span>
+          </div>
+          <div className="will__meterblock">
+            <Microlabel>DEMAND</Microlabel>
+            <span className="will__bigvalue will__bigvalue--alert">{demandMeter}%</span>
+          </div>
+          <div className="will__meterblock">
+            <Microlabel>DESIRE</Microlabel>
+            <span className="will__bigvalue">STRUCTURAL</span>
+          </div>
+          <div className="will__meterblock">
+            <Microlabel>OBJECTS RECEIVED</Microlabel>
+            <span className="will__bigvalue">{received}</span>
+          </div>
+        </div>
+      )}
 
       <div className="will__footer">
         <div className="will__log" aria-live="polite">
@@ -264,19 +329,29 @@ export default function Machine() {
   )
 }
 
-function NeedPanel({ need, onSatisfy }: { need: NeedInstance; onSatisfy: () => void }) {
+function NeedPanel({
+  need,
+  kind,
+  onSatisfy,
+}: {
+  need: NeedInstance
+  kind?: 'need' | 'demand' | 'desire'
+  onSatisfy: () => void
+}) {
   const props = usePressable({ sfx: false })
   const age = (Date.now() - need.bornAt) / 1000
   const intensity = Math.min(1, 0.4 + age * 0.12)
   return (
     <button
-      className="will__need"
+      className={`will__need${kind === 'desire' ? ' will__need--desire' : ''}`}
       style={{ opacity: 0.55 + intensity * 0.45 }}
       {...props}
       onClick={onSatisfy}
     >
       <span className="will__needlabel">{need.def.label}</span>
-      <span className="will__needsatisfy">[ SATISFY ]</span>
+      <span className="will__needsatisfy">
+        {kind === 'desire' ? '[ RECEIVE OBJECT ]' : '[ SATISFY ]'}
+      </span>
     </button>
   )
 }

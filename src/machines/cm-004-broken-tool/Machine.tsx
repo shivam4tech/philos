@@ -50,6 +50,11 @@ export default function Machine() {
   const brokenClicks = useRef(0)
   const completedRef = useRef(false)
 
+  /* COMMODITY CONTAMINATION (Heidegger × Marx): provenance must be stamped */
+  const contaminated = api.contaminantId === 'marx'
+  const [stamped, setStamped] = useState<Set<number>>(new Set())
+  const [ledgerOpen, setLedgerOpen] = useState(false)
+
   const placed = crates.filter((c) => c.placedZone !== null).length
 
   useEffect(() => {
@@ -64,15 +69,19 @@ export default function Machine() {
       }
     }
     if (nextLevel >= 2) setLabelsVisible(true)
-    if (placed >= TOTAL_CRATES && !completedRef.current) {
+    if (contaminated && nextLevel >= 1 && !ledgerOpen) {
+      setLedgerOpen(true)
+    }
+    const ready = contaminated ? placed >= TOTAL_CRATES && stamped.size >= placed : placed >= TOTAL_CRATES
+    if (ready && !completedRef.current) {
       completedRef.current = true
       window.setTimeout(() => {
         setCompleted(true)
-        api.complete('tool:equipment-objectified')
+        api.complete(contaminated ? 'tool:contaminated-session' : 'tool:equipment-objectified')
       }, 1100)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- level read per placement
-  }, [placed])
+  }, [placed, stamped])
 
   /* cursor drift at level 2+ — the pointer stops pointing where it points */
   useEffect(() => {
@@ -277,6 +286,36 @@ export default function Machine() {
           ))}
         </div>
       </div>
+
+      {contaminated && ledgerOpen && (
+        <aside className="btool__ledger" aria-label="Provenance ledger">
+          <Microlabel signal>PROVENANCE LEDGER — OPENED BY BREAKDOWN, NOT BY REQUEST</Microlabel>
+          {crates.filter((c) => c.placedZone !== null).map((crate) => (
+            <div key={crate.id} className="btool__ledgerrow">
+              <span className="btool__ledgercode">{crate.code}</span>
+              <span className="btool__ledgerfield">
+                MANUFACTURED BY: UNLISTED HANDS · RELATION: WAGE · OWNER: FACILITY · ABSTRACTED: ITS HISTORY
+              </span>
+              {stamped.has(crate.id) ? (
+                <span className="btool__stamp">COMMODITY</span>
+              ) : (
+                <button
+                  className="btool__stampbtn"
+                  onClick={() => {
+                    setStamped((prev) => new Set(prev).add(crate.id))
+                    api.play('surveillance', 0.4)
+                  }}
+                >
+                  STAMP: COMMODITY
+                </button>
+              )}
+            </div>
+          ))}
+          {placed < TOTAL_CRATES && (
+            <p className="btool__ledgerhint">THE TASK CANNOT COMPLETE UNSTAMPED. SORT THE REMAINING CRATES.</p>
+          )}
+        </aside>
+      )}
 
       {completed && (
         <div className="btool__verdict" role="status">

@@ -193,3 +193,46 @@ export function replayAnnotations(replayCount: number): string[] {
       ]
   }
 }
+
+/* Nietzsche × Deleuze contamination: repetition that diverges */
+
+const SYNONYM_SWAPS: Array<[RegExp, string, string]> = [
+  [/EXACTLY AS LEFT/, 'ALMOST EXACTLY AS LEFT', 'SHORTER THAN YOU REMEMBERED'],
+  [/TIME PASSES ANYWAY/, 'TIME PASSES DIFFERENTLY', 'THE ROOM AGES FASTER'],
+  [/SHORTER THAN THE SILENCE/, 'SHORTER THAN YOU INTENDED', 'SENT BEFORE YOU REVIEWED IT'],
+  [/SLOWLY/, 'EVENTUALLY', 'AT ONCE'],
+  [/QUIETER THAN EXPECTED/, 'LOUDER THAN EXPECTED', 'SOMETHING ELSE ENTIRELY'],
+  [/SMALLER IN DAYLIGHT/, 'SMALLER IN EVENING', 'GONE BY MORNING'],
+]
+
+function hash01(seed: number): number {
+  let h = seed | 0
+  h = Math.imul(h ^ (h >>> 16), 2246822507)
+  h = Math.imul(h ^ (h >>> 13), 3266489909)
+  h ^= h >>> 16
+  return (h >>> 0) / 4294967296
+}
+
+/** Deterministic divergence of a replayed outcome line. */
+export function divergeLine(line: string, pass: number): string {
+  for (let i = 0; i < SYNONYM_SWAPS.length; i++) {
+    const [pattern, first, second] = SYNONYM_SWAPS[i]
+    if (pattern.test(line)) {
+      return line.replace(pattern, hash01(line.length * 31 + pass * 7 + i) > 0.5 ? first : second)
+    }
+  }
+  if (pass % 2 === 0) return `${line.slice(0, -1)}. AGAIN.`
+  return line
+}
+
+/** WHAT EXACTLY HAS RETURNED — identity metrics for the drifting replay. */
+export function divergenceReport(total: number, diverged: number): { identity: number; similarity: number; difference: number } {
+  const safeTotal = Math.max(1, total)
+  const identity = Math.max(0, 1 - diverged / safeTotal)
+  const similarity = Math.min(1, diverged / safeTotal + 0.35)
+  return {
+    identity,
+    similarity,
+    difference: diverged / safeTotal,
+  }
+}

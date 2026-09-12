@@ -23,6 +23,10 @@ export interface MachineApi {
   play: (name: SfxName, gain?: number) => void
   /** whether this machine has a recorded completion (record state) */
   completed: boolean
+  /** active interpretation mode id (from the frame's mode selector) */
+  modeId: string | null
+  /** active cross-contamination id (from the Composition Chamber) */
+  contaminantId: string | null
 }
 
 export const MachineContext = createContext<MachineApi | null>(null)

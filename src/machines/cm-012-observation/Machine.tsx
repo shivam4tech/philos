@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useMachine } from '@/machines/context'
 import { usePressable } from '@/interact/micro'
@@ -19,10 +19,11 @@ export default function Machine() {
   const api = useMachine()
   const [taskIndex, setTaskIndex] = useState(0)
   const [metrics, setMetrics] = useState<ConductMetrics>(emptyMetrics())
-  const [analyticsOpen, setAnalyticsOpen] = useState(false)
+  const [analyticsOpen, setAnalyticsOpen] = useState(api.modeId === 'self-monitoring')
   const [premature, setPremature] = useState(false)
   const [completed, setCompleted] = useState(false)
   const [note, setNote] = useState<string | null>(null)
+  const [percentile, setPercentile] = useState<number | null>(null)
   const instructionShownAt = useRef(Date.now())
   const started = useRef(false)
   const [sliders, setSliders] = useState([50, 50, 50])
@@ -73,6 +74,17 @@ export default function Machine() {
     window.setTimeout(() => setNote(null), 1200)
   }
 
+  const advance = useCallback(() => {
+    if (taskIndex + 1 >= TASKS.length) return
+    if (api.modeId === 'examination-normalization') {
+      /* the examination compares you against an authored cohort curve */
+      setPercentile(Math.max(3, Math.min(97, 12 + metrics.instructionDeviations * 9 + metrics.selfCorrections * 3)))
+    }
+    setTaskIndex((i) => i + 1)
+    instructionShownAt.current = Date.now()
+    started.current = false
+  }, [api.modeId, metrics.instructionDeviations, metrics.selfCorrections, taskIndex])
+
   const task = TASKS[taskIndex]
 
   const setSlider = (index: number, value: number) => {
@@ -89,13 +101,11 @@ export default function Machine() {
     if (sliders.every((v, i) => v === TARGET_VALUES[i])) {
       const t = window.setTimeout(() => {
         setAnalyticsOpen(true)
-        setTaskIndex(1)
-        instructionShownAt.current = Date.now()
-        started.current = false
+        advance()
       }, 700)
       return () => window.clearTimeout(t)
     }
-  }, [sliders, taskIndex])
+  }, [sliders, taskIndex, advance])
 
   const pressPanel = (id: string) => {
     firstInput()
@@ -110,9 +120,7 @@ export default function Machine() {
     api.play('toggle', 0.5)
     if (next.length === PANEL_SEQUENCE.length) {
       const t = window.setTimeout(() => {
-        setTaskIndex(2)
-        instructionShownAt.current = Date.now()
-        started.current = false
+        advance()
         setPanelClicks([])
       }, 700)
       return () => window.clearTimeout(t)
@@ -155,8 +163,17 @@ export default function Machine() {
       </header>
 
       <div className="observation__banner" role="status">
-        {LINES.banner}
+        {api.modeId === 'panoptic-visibility'
+          ? 'AN OBSERVATION POST IS ESTABLISHED. ITS STATE CANNOT BE DETERMINED.'
+          : LINES.banner}
       </div>
+
+      {percentile !== null && (
+        <div className="observation__percentile" role="status">
+          YOUR CONDUCT PLACES YOU AT THE <b>{percentile}TH PERCENTILE</b> OF THE COHORT.
+          THE CURVE IS THE INSTRUMENT. YOU ARE BEING NORMALIZED, NOT PUNISHED.
+        </div>
+      )}
 
       <div className="observation__task">
         <p className="observation__instruction">{task.instruction}</p>

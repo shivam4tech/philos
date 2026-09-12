@@ -90,6 +90,41 @@
   }
 }
 
+.mframe__hybrid {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  color: var(--phosphor);
+  border: 1px solid var(--phosphor-dim);
+  border-radius: var(--radius);
+  padding: 3px 7px;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mframe__modeselect {
+  background: var(--ink-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  padding: 6px 8px;
+}
+
+.mframe__hybridnote {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  line-height: 1.8;
+  color: var(--phosphor);
+  max-width: 46ch;
+  margin-top: 6px;
+}
+
 .mframe__energizing {
   height: 100%;
   display: flex;

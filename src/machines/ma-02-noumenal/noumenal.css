@@ -1,0 +1,94 @@
+.noumenal {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  overflow-y: auto;
+}
+
+.noumenal__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-4);
+  padding: var(--gap-3) var(--gap-5);
+  border-bottom: var(--hairline);
+}
+
+.noumenal__title {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.noumenal__title:hover {
+  color: var(--blueprint);
+}
+
+.noumenal__stack {
+  flex: 1;
+  padding: var(--gap-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+}
+
+.noumenal__pane {
+  border: 1px solid var(--blueprint);
+  border-left: 2px solid var(--blueprint);
+  border-radius: var(--radius);
+  background: rgba(125, 154, 181, 0.04);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+  animation: pane-open 300ms var(--ease-out);
+}
+
+@keyframes pane-open {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.noumenal__panetag {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--blueprint);
+}
+
+.noumenal__panetext {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  line-height: 1.9;
+  color: var(--text-dim);
+}
+
+.noumenal__beneath {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+  border-top: 1px dashed var(--line);
+  padding-top: var(--gap-2);
+}
+
+.noumenal__verdict {
+  padding: var(--gap-4) var(--gap-5);
+  border-top: 1px solid var(--alert-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  line-height: 2;
+  color: var(--alert);
+}

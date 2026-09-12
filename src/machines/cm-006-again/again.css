@@ -159,6 +159,20 @@
   letter-spacing: 0.08em;
   color: var(--text-dim);
   text-align: left;
+  cursor: default;
+  border-radius: var(--radius);
+}
+
+.again__record li.is-edited {
+  color: var(--amber);
+  background: rgba(217, 164, 65, 0.05);
+}
+
+.again__auto {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--alert);
 }
 
 .again__recordmoment {
@@ -226,6 +240,34 @@
   border-left: 2px solid var(--amber-dim);
   padding-left: var(--gap-3);
   animation: scene-in 400ms var(--ease-out);
+}
+
+/* Nietzsche × Deleuze: divergence report */
+.again__report {
+  border: 1px solid var(--phosphor-dim);
+  border-radius: var(--radius);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+  width: 100%;
+}
+
+.again__reportrow {
+  display: flex;
+  gap: var(--gap-4);
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--phosphor);
+}
+
+.again__drift {
+  font-style: normal;
+  font-size: 8px;
+  color: var(--alert);
+  letter-spacing: 0.1em;
 }
 
 .again__nested {

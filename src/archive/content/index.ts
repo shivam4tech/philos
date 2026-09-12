@@ -44,6 +44,11 @@ import { apparatus as cm009 } from '@/machines/cm-009-difference/content'
 import { apparatus as cm010 } from '@/machines/cm-010-expenditure/content'
 import { apparatus as cm011 } from '@/machines/cm-011-terms/content'
 import { apparatus as cm012 } from '@/machines/cm-012-observation/content'
+import { apparatus as cm000 } from '@/machines/cm-000-parmenides/content'
+import { apparatus as ma01 } from '@/machines/ma-01-zeno/content'
+import { apparatus as ma02 } from '@/machines/ma-02-noumenal/content'
+import { apparatus as ma03 } from '@/machines/ma-03-writing-pad/content'
+import { apparatus as ma04 } from '@/machines/ma-04-attention/content'
 
 const SECTION_FILL: Readonly<Record<string, Partial<TextualApparatus>>> = {
   'cm-001-will': cm001,
@@ -58,6 +63,11 @@ const SECTION_FILL: Readonly<Record<string, Partial<TextualApparatus>>> = {
   'cm-010-expenditure': cm010,
   'cm-011-terms': cm011,
   'cm-012-observation': cm012,
+  'cm-000-parmenides': cm000,
+  'ma-01-zeno': ma01,
+  'ma-02-noumenal': ma02,
+  'ma-03-writing-pad': ma03,
+  'ma-04-attention': ma04,
 }
 
 const EMPTY_SECTIONS = {

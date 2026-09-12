@@ -14,7 +14,7 @@ export type Route =
   | { name: 'record' }
   | { name: 'archive' }
   | { name: 'archive-machine'; id: string }
-  | { name: 'machine'; id: string }
+  | { name: 'machine'; id: string; contaminant?: string }
   | { name: 'settings' }
   | { name: 'chamber' }
 
@@ -23,7 +23,9 @@ export function routeToHash(route: Route): string {
     case 'entrance':
       return '#/'
     case 'machine':
-      return `#/machine/${route.id}`
+      return route.contaminant
+        ? `#/machine/${route.id}?x=${route.contaminant}`
+        : `#/machine/${route.id}`
     case 'archive-machine':
       return `#/archive/${route.id}`
     default:
@@ -32,8 +34,11 @@ export function routeToHash(route: Route): string {
 }
 
 export function parseHash(hash: string): Route {
-  const segments = hash.replace(/^#\/?/, '').split('/').filter(Boolean)
+  const [pathPart, queryPart] = hash.split('?')
+  const segments = pathPart.replace(/^#\/?/, '').split('/').filter(Boolean)
   const [head, tail] = segments
+  const params = new URLSearchParams(queryPart ?? '')
+  const contaminant = params.get('x') ?? undefined
   switch (head) {
     case undefined:
       return { name: 'entrance' }
@@ -47,7 +52,11 @@ export function parseHash(hash: string): Route {
       if (tail && MACHINE_BY_ID.has(tail)) return { name: 'archive-machine', id: tail }
       return { name: 'archive' }
     case 'machine':
-      if (tail && MACHINE_BY_ID.has(tail)) return { name: 'machine', id: tail }
+      if (tail && MACHINE_BY_ID.has(tail)) {
+        return contaminant
+          ? { name: 'machine', id: tail, contaminant }
+          : { name: 'machine', id: tail }
+      }
       return { name: 'catalogue' }
     case 'settings':
       return { name: 'settings' }

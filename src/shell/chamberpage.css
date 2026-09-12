@@ -1,0 +1,132 @@
+.chamber__lead {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  line-height: 2;
+  color: var(--text-dim);
+  max-width: 76ch;
+}
+
+.chamber__sealed {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--alert);
+  border: 1px solid var(--alert-dim);
+  border-radius: var(--radius);
+  padding: var(--gap-4);
+  max-width: 560px;
+}
+
+.chamber__grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(0, 1.2fr);
+  gap: var(--gap-4);
+}
+
+.chamber__col,
+.chamber__detail {
+  border: 1px solid var(--phosphor-dim);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: var(--gap-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+}
+
+.chamber__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--gap-3);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+
+.chamber__entry:hover {
+  border-color: var(--phosphor);
+}
+
+.chamber__entry.is-selected {
+  border-color: var(--phosphor);
+  background: rgba(143, 191, 159, 0.05);
+}
+
+.chamber__entry.is-locked {
+  opacity: 0.55;
+}
+
+.chamber__entrytitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.chamber__entrypair {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.chamber__entrystate {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--phosphor-dim);
+}
+
+.chamber__entry.is-locked .chamber__entrystate {
+  color: var(--alert-dim);
+}
+
+.chamber__hybridtitle {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--phosphor);
+}
+
+.chamber__mechanism {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--text-dim);
+}
+
+.chamber__pairing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-3);
+}
+
+.chamber__pairing div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chamber__pairing span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+}
+
+.chamber__hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+
+@media (max-width: 860px) {
+  .chamber__grid {
+    grid-template-columns: 1fr;
+  }
+}

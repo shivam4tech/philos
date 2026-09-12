@@ -1,10 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useMachine } from '@/machines/context'
 import { usePressable } from '@/interact/micro'
 import { Btn, Microlabel } from '@/shell/ui'
-import { SCENES, VERDICT, outcomeFor, replayAnnotations } from './machine'
+import {
+  SCENES,
+  VERDICT,
+  divergeLine,
+  divergenceReport,
+  outcomeFor,
+  replayAnnotations,
+} from './machine'
 import './again.css'
+
+function hash01(seed: number): number {
+  let h = seed | 0
+  h = Math.imul(h ^ (h >>> 16), 2246822507)
+  h = Math.imul(h ^ (h >>> 13), 3266489909)
+  h ^= h >>> 16
+  return (h >>> 0) / 4294967296
+}
 
 type Phase = 'life' | 'verdict' | 'replay' | 'refused'
 
@@ -65,7 +80,7 @@ export default function Machine() {
     api.play('invalid', 0.5)
   }
 
-  /* replay engine: exact, input-free, accelerating */
+  /* replay engine: exact, input-free, accelerating — or diverging under contamination */
   useEffect(() => {
     if (phase !== 'replay') return
     if (replayIndex >= record.length) {
@@ -82,6 +97,43 @@ export default function Machine() {
     return () => window.clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- replay pacing
   }, [phase, replayIndex])
+
+  /* NIETZSCHE × DELEUZE: the record returns, but drifts */
+  const contaminated = api.contaminantId === 'cm-009-difference'
+  const diverged = useMemo(
+    () =>
+      contaminated
+        ? record.slice(0, replayIndex).filter((_, i) => hash01(i * 131 + replayCount * 977) > 0.62).length
+        : 0,
+    [contaminated, record, replayIndex, replayCount],
+  )
+
+  /* MODE B (cosmological): once the life completes, recurrence is not optional */
+  useEffect(() => {
+    if (api.modeId !== 'cosmological-proposition' || phase !== 'verdict') return
+    const t = window.setTimeout(() => doAgain(), 2600)
+    timers.current.push(t)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-recurrence per verdict
+  }, [phase, api.modeId])
+
+  /* MODE C (selective): one recorded choice may be transformed before recurrence */
+  const [editedIndex, setEditedIndex] = useState<number | null>(null)
+  const cycleChoice = (index: number) => {
+    if (api.modeId !== 'selective-transformative') return
+    setRecord((prev) => {
+      const next = [...prev]
+      const entry = next[index]
+      const scene = SCENES.find((s) => s.id === entry.sceneId)
+      if (!scene) return prev
+      const ids = scene.choices.map((c) => c.id)
+      const at = ids.indexOf(entry.choiceId)
+      next[index] = { ...entry, choiceId: ids[(at + 1) % ids.length] }
+      return next
+    })
+    setEditedIndex(index)
+    api.play('semantic-shift', 0.6)
+  }
 
   const nestedAgain = () => {
     if (!secretFired) {
@@ -103,30 +155,48 @@ export default function Machine() {
   }
 
   if (phase === 'verdict') {
+    const cosmological = api.modeId === 'cosmological-proposition'
     return (
       <div className="again again--verdict">
-        <Microlabel>APPARATUS CM-006 — SESSION RECORD</Microlabel>
+        <Microlabel>APPARATUS CM-006 — SESSION RECORD{api.modeId ? ` — ${api.modeId.toUpperCase().replace(/-/g, ' ')}` : ''}</Microlabel>
         <h2 className="again__title">{VERDICT.completed}</h2>
         <ol className="again__record">
           {record.map((entry, i) => {
             const scene = SCENES.find((s) => s.id === entry.sceneId)
             const choice = scene?.choices.find((c) => c.id === entry.choiceId)
             return (
-              <li key={`${entry.sceneId}-${i}`}>
+              <li
+                key={`${entry.sceneId}-${i}`}
+                onClick={() => cycleChoice(i)}
+                className={editedIndex === i ? 'is-edited' : undefined}
+                title={api.modeId === 'selective-transformative' ? 'CYCLE THIS CHOICE' : undefined}
+              >
                 <span className="again__recordmoment">{scene?.moment}</span>
-                <span className="again__recordchoice">{choice?.label}</span>
+                <span className="again__recordchoice">
+                  {choice?.label}
+                  {editedIndex === i && <em className="again__drift"> ·TRANSFORMED·</em>}
+                </span>
               </li>
             )
           })}
         </ol>
-        <p className="again__question">{VERDICT.question}</p>
+        <p className="again__question">
+          {cosmological
+            ? 'IT RETURNS BECAUSE IT MUST. THE QUESTION IS OBSERVATIONAL.'
+            : VERDICT.question}
+        </p>
         <div className="again__verdictactions">
-          <Btn variant="primary" onClick={doAgain}>
-            AGAIN
-          </Btn>
-          <Btn variant="ghost" onClick={doRefuse}>
-            REFUSE
-          </Btn>
+          {!cosmological && (
+            <Btn variant="primary" onClick={doAgain}>
+              AGAIN
+            </Btn>
+          )}
+          {!cosmological && (
+            <Btn variant="ghost" onClick={doRefuse}>
+              REFUSE
+            </Btn>
+          )}
+          {cosmological && <span className="again__auto">RECURRENCE PROCEEDS WITHOUT CONSENT.</span>}
         </div>
       </div>
     )
@@ -135,22 +205,41 @@ export default function Machine() {
   if (phase === 'replay') {
     const visible = record.slice(0, replayIndex + 1)
     const annotation = annotations[Math.min(replayIndex, annotations.length - 1)]
+    const report = divergenceReport(record.length, diverged)
     return (
       <div className="again again--replay">
-        <Microlabel signal>RECURRENCE {replayCount} — INPUT SUSPENDED</Microlabel>
+        <Microlabel signal>
+          {contaminated ? 'DIFFERENCE-CONTAMINATED RECURRENCE — INPUT SUSPENDED' : `RECURRENCE ${replayCount} — INPUT SUSPENDED`}
+        </Microlabel>
         <div className="again__replaylog">
           {visible.map((entry, i) => {
             const scene = SCENES.find((s) => s.id === entry.sceneId)
+            const divergedLine =
+              contaminated && hash01(i * 131 + replayCount * 977) > 0.62
+                ? divergeLine(outcomeFor(entry.sceneId, entry.choiceId), replayCount + i)
+                : null
             return (
               <p key={`${entry.sceneId}-${i}`} className="again__replayline">
                 <span className="again__recordmoment">{scene?.moment}</span>
-                {outcomeFor(entry.sceneId, entry.choiceId)}
+                {divergedLine ?? outcomeFor(entry.sceneId, entry.choiceId)}
+                {divergedLine && <em className="again__drift"> ·DRIFT·</em>}
               </p>
             )
           })}
         </div>
-        {replayIndex >= 3 && annotation && <p className="again__annotation">{annotation}</p>}
-        {!secretFired && replayIndex > 4 && (
+        {contaminated && (
+          <div className="again__report">
+            <Microlabel signal>WHAT EXACTLY HAS RETURNED?</Microlabel>
+            <div className="again__reportrow">
+              <span>IDENTITY: {(report.identity * 100).toFixed(0)}%</span>
+              <span>SIMILARITY: {(report.similarity * 100).toFixed(0)}%</span>
+              <span>DIFFERENCE: {(report.difference * 100).toFixed(0)}%</span>
+              <span>ACCUMULATION: {replayCount} PASS{replayCount === 1 ? '' : 'ES'}</span>
+            </div>
+          </div>
+        )}
+        {!contaminated && replayIndex >= 3 && annotation && <p className="again__annotation">{annotation}</p>}
+        {!secretFired && replayIndex > 4 && !contaminated && (
           <button className="again__nested" onClick={nestedAgain}>
             AGAIN?
           </button>

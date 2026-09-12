@@ -66,6 +66,19 @@ export default function Machine() {
   }
   const holds = correspondenceHolds(states.A, states.B, states.C)
 
+  /* LEIBNIZ × FOUCAULT: perfect prediction, zero access */
+  const contaminated = api.contaminantId === 'cm-012-observation'
+  const [stance, setStance] = useState<string | null>(null)
+  const takeStance = (value: string) => {
+    setStance(value)
+    api.play('surveillance', 0.5)
+    if (!completionFiredRef.current) {
+      completionFiredRef.current = true
+      api.complete('windows:contaminated-session')
+    }
+  }
+  const completionFiredRef = useRef(false)
+
   const perturb = (spec: MonadSpec) => {
     if (declared) return
     setPerturbations((p) => p + 1)
@@ -159,24 +172,53 @@ export default function Machine() {
         </div>
 
         <div className="windows__direct">
-          <Microlabel>DIRECT CHANNEL (EXPERIMENTAL — MONAD A → MONAD B)</Microlabel>
-          <div className="windows__transmit">
-            <input
-              value={transmitText}
-              onChange={(e) => setTransmitText(e.target.value)}
-              placeholder="COMPOSE MESSAGE FOR MONAD B…"
-              aria-label="Message for Monad B"
-            />
-            <Btn onClick={transmit} disabled={transmitText.trim() === ''}>
-              TRANSMIT
-            </Btn>
-          </div>
-          {declared ? (
-            <p className="windows__note">{LINES.declared} {LINES.windowless}</p>
+          {contaminated ? (
+            <>
+              <Microlabel signal>INSTITUTE MONAD ANALYTICS — ALWAYS OPEN</Microlabel>
+              <div className="windows__predictions">
+                {MONADS.map((spec) => (
+                  <p key={spec.id} className="windows__prediction">
+                    MONAD {spec.id} AT T+1: <b>{monadState(spec, tick + spec.periodTicks)}</b> — CONFIDENCE 100% — ACCESS GRANTED: NONE
+                  </p>
+                ))}
+              </div>
+              <p className="windows__question">IS PERFECT PREDICTABILITY EQUIVALENT TO ACCESS?</p>
+              <div className="windows__stance">
+                {['YES', 'NO', 'UNDECIDABLE'].map((option) => (
+                  <Btn key={option} onClick={() => takeStance(option)} disabled={stance !== null}>
+                    {option}
+                  </Btn>
+                ))}
+              </div>
+              {stance && (
+                <p className="windows__note">
+                  STANCE FILED, NOT RATIFIED. THE ANALYTICS PANEL REMAINS OPEN, WHICH IS ITS OWN ANSWER.
+                </p>
+              )}
+            </>
           ) : (
-            <p className="windows__note">{note ?? 'THE INSTITUTE ADVISES AGAINST ATTEMPTING CONTACT.'}</p>
+            <>
+              <Microlabel>DIRECT CHANNEL (EXPERIMENTAL — MONAD A → MONAD B)</Microlabel>
+              <div className="windows__transmit">
+                <input
+                  value={transmitText}
+                  onChange={(e) => setTransmitText(e.target.value)}
+                  placeholder="COMPOSE MESSAGE FOR MONAD B…"
+                  aria-label="Message for Monad B"
+                />
+                <Btn onClick={transmit} disabled={transmitText.trim() === ''}>
+                  TRANSMIT
+                </Btn>
+              </div>
+              <p className="windows__note">{note ?? 'THE INSTITUTE ADVISES AGAINST ATTEMPTING CONTACT.'}</p>
+            </>
           )}
-          {events >= CORRESPONDENCE_EVENTS_FOR_COMPLETION && !declared && (
+          {events >= CORRESPONDENCE_EVENTS_FOR_COMPLETION && !declared && !contaminated && (
+            <Btn variant="primary" onClick={declare}>
+              DECLARE CORRESPONDENCE PERFECT
+            </Btn>
+          )}
+          {events >= CORRESPONDENCE_EVENTS_FOR_COMPLETION && !declared && contaminated && (
             <Btn variant="primary" onClick={declare}>
               DECLARE CORRESPONDENCE PERFECT
             </Btn>

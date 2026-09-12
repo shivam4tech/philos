@@ -42,7 +42,16 @@ export default function Machine() {
     api.play('semantic-shift', 0.7)
   }
 
-  /* rotation drag */
+  /* MODE B (temporal): the flow turns itself; retention is foregrounded */
+  useEffect(() => {
+    if (api.modeId !== 'temporal-constitution') return
+    const interval = window.setInterval(() => setAngle((a) => a + 6), 120)
+    return () => window.clearInterval(interval)
+  }, [api.modeId])
+
+  const embodied = api.modeId === 'embodied-orientation'
+
+  /* rotation drag — inverted under embodied orientation (the body moves, not the world) */
   const onDown = (e: React.PointerEvent) => {
     if (bracketed < 2) return
     dragging.current = { x: e.clientX, angle }
@@ -51,7 +60,7 @@ export default function Machine() {
   const onMove = (e: React.PointerEvent) => {
     const drag = dragging.current
     if (!drag) return
-    setAngle(drag.angle + (e.clientX - drag.x) * 0.6)
+    setAngle(drag.angle + (embodied ? -1 : 1) * (e.clientX - drag.x) * 0.6)
   }
   const onUp = () => {
     dragging.current = null
@@ -73,9 +82,12 @@ export default function Machine() {
           onPointerMove={onMove}
           onPointerUp={onUp}
         >
-          <ChairView view={view} elevated={elevated && bracketed >= 5} bracketed={bracketed} />
+          <ChairView view={view} elevated={(elevated || embodied) && bracketed >= 5} bracketed={bracketed} />
           {bracketed === 0 && <p className="bracket__objectname">CHAIR</p>}
-          {bracketed >= 4 && <span className="bracket__here">HERE</span>}
+          {(bracketed >= 4 || embodied) && <span className="bracket__here">HERE{embodied ? ' — THE VIEW IS YOURS, AND YOURS MOVES' : ''}</span>}
+          {api.modeId === 'temporal-constitution' && bracketed > 0 && (
+            <span className="bracket__flowline">THE FLOW TURNS ITSELF. RETENTION TRAILS BELOW.</span>
+          )}
         </div>
 
         <div className="bracket__console">

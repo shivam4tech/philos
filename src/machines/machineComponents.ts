@@ -18,6 +18,11 @@ const COMPONENTS: Record<string, LazyExoticComponent<ComponentType>> = {
   'cm-010-expenditure': lazy(() => import('./cm-010-expenditure/Machine')),
   'cm-011-terms': lazy(() => import('./cm-011-terms/Machine')),
   'cm-012-observation': lazy(() => import('./cm-012-observation/Machine')),
+  'cm-000-parmenides': lazy(() => import('./cm-000-parmenides/Machine')),
+  'ma-01-zeno': lazy(() => import('./ma-01-zeno/Machine')),
+  'ma-02-noumenal': lazy(() => import('./ma-02-noumenal/Machine')),
+  'ma-03-writing-pad': lazy(() => import('./ma-03-writing-pad/Machine')),
+  'ma-04-attention': lazy(() => import('./ma-04-attention/Machine')),
 }
 
 const OFFLINE = lazy(() => import('./OfflineApparatus'))

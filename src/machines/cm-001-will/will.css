@@ -142,6 +142,34 @@
   }
 }
 
+/* Schopenhauer × Lacan contamination */
+.will__lacan {
+  display: flex;
+  gap: var(--gap-6);
+  flex-wrap: wrap;
+  border: 1px solid var(--phosphor-dim);
+  border-radius: var(--radius);
+  background: rgba(143, 191, 159, 0.03);
+  padding: var(--gap-3) var(--gap-4);
+}
+
+.will__bigvalue--alert {
+  color: var(--alert);
+}
+
+.will__need--desire {
+  border-style: dashed;
+  border-color: var(--phosphor-dim);
+}
+
+.will__need--desire:hover {
+  border-color: var(--phosphor);
+}
+
+.will__need--desire .will__needsatisfy {
+  color: var(--phosphor);
+}
+
 /* stage 3+: the engine becomes busier */
 .will--stage3 .will__need,
 .will--stage4 .will__need {

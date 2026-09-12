@@ -25,6 +25,8 @@ import { Archive, ArchiveDetail } from './shell/Archive'
 import { SettingsPanel } from './shell/SettingsPanel'
 import { ContaminationLayer } from './shell/ContaminationLayer'
 import { ErrorBoundary } from './shell/ErrorBoundary'
+import { ChamberPage } from './shell/ChamberPage'
+import { ObservingDeck } from './shell/ObservingDeck'
 import { MachineRoute } from './machines/MachineFrame'
 
 export function App() {
@@ -42,7 +44,7 @@ export function App() {
 
   if (route.name === 'machine') {
     return (
-      <ErrorBoundary resetKey={route.id}>
+      <ErrorBoundary resetKey={`${route.id}:${route.contaminant ?? ''}`}>
         <MachineRoute machineId={route.id} />
       </ErrorBoundary>
     )
@@ -52,6 +54,7 @@ export function App() {
 }
 
 function Shell({ route }: { route: ReturnType<typeof useRoute> }) {
+  const record = useRecord()
 
   /* route-change side effects: scene, metrics, contamination, institution */
   useEffect(() => {
@@ -118,10 +121,13 @@ function Shell({ route }: { route: ReturnType<typeof useRoute> }) {
         {route.name === 'archive' && <Archive />}
         {route.name === 'archive-machine' && <ArchiveDetail machineId={route.id} />}
         {route.name === 'settings' && <SettingsPanel />}
-        {route.name === 'chamber' && <ChamberPlaceholder />}
+        {route.name === 'chamber' && <ChamberPage />}
         {route.name === 'entrance' && <RedirectToFacility />}
       </main>
       <ContaminationLayer />
+      {record.designation === 'APPARATUS' && !record.observingAcknowledged && (
+        <ObservingDeck />
+      )}
     </div>
   )
 }
@@ -135,19 +141,4 @@ function RedirectToFacility() {
     navigate({ name: 'facility' }, { replace: true })
   }, [])
   return null
-}
-
-/** Sprint 4 delivers the Composition Chamber; until then it is sealed. */
-function ChamberPlaceholder() {
-  return (
-    <div className="page">
-      <p className="microlabel">EXPERIMENTAL COMPOSITION CHAMBER</p>
-      <h1 style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.12em', margin: '8px 0' }}>
-        SEALED — INTER-PHILOSOPHICAL REACTIONS POSSIBLE
-      </h1>
-      <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>
-        THE CHAMBER OPENS AFTER SUFFICIENT APPARATUS COMPLETIONS.
-      </p>
-    </div>
-  )
 }
