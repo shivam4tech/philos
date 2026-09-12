@@ -27,6 +27,36 @@ export interface TextualApparatus {
 
 type ApparatusDraft = Pick<TextualApparatus, 'machineId' | 'primarySource' | 'conceptualProblem' | 'questionsForTheText'>
 
+/**
+ * Machine-local apparatus sections (03–08) live inside each machine folder
+ * and are merged here with the citation drafts above. A new apparatus adds
+ * its content.ts and one import below.
+ */
+import { apparatus as cm001 } from '@/machines/cm-001-will/content'
+import { apparatus as cm002 } from '@/machines/cm-002-desire/content'
+import { apparatus as cm003 } from '@/machines/cm-003-vending/content'
+import { apparatus as cm004 } from '@/machines/cm-004-broken-tool/content'
+import { apparatus as cm005 } from '@/machines/cm-005-bracket/content'
+import { apparatus as cm006 } from '@/machines/cm-006-again/content'
+
+const SECTION_FILL: Readonly<Record<string, Partial<TextualApparatus>>> = {
+  'cm-001-will': cm001,
+  'cm-002-desire': cm002,
+  'cm-003-vending': cm003,
+  'cm-004-broken-tool': cm004,
+  'cm-005-bracket': cm005,
+  'cm-006-again': cm006,
+}
+
+const EMPTY_SECTIONS = {
+  whatTheMachineDid: '',
+  whatTheMachineDistorted: '',
+  whyDistortionMatters: '',
+  competingReading: '',
+  implementationNotes: '',
+} as const
+
+
 const DRAFTS: ApparatusDraft[] = [
   {
     machineId: 'cm-001-will',
@@ -258,20 +288,16 @@ const DRAFTS: ApparatusDraft[] = [
 ]
 
 /**
- * Phase 0 ships citations + the conceptual problem + take-back questions.
- * Sections 3–6 and 8 are authored alongside each machine implementation
- * (Sprints 2–3) because they document the actual mechanic.
+ * Phase 0 shipped citations + the conceptual problem + take-back questions.
+ * Sections 3–6 and 8 come from the machine folders via SECTION_FILL.
  */
 export const APPARATUS_CONTENT: ReadonlyMap<string, TextualApparatus> = new Map(
   DRAFTS.map((d) => [
     d.machineId,
     {
+      ...EMPTY_SECTIONS,
       ...d,
-      whatTheMachineDid: '',
-      whatTheMachineDistorted: '',
-      whyDistortionMatters: '',
-      competingReading: '',
-      implementationNotes: '',
+      ...(SECTION_FILL[d.machineId] ?? {}),
     } satisfies TextualApparatus,
   ]),
 )

@@ -1,0 +1,225 @@
+.vending {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-5);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 10%, rgba(125, 154, 181, 0.05), transparent),
+    var(--ink);
+}
+
+.vending__machine {
+  width: min(560px, 100%);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--panel) 0%, var(--ink-2) 100%);
+  padding: var(--gap-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.vending__display {
+  border: 1px solid var(--line);
+  background: #0a0c0a;
+  border-radius: var(--radius);
+  padding: var(--gap-3) var(--gap-4);
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.vending__displaytext {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--phosphor);
+  animation: vend-flicker 4s linear infinite;
+}
+
+@keyframes vend-flicker {
+  0%, 96%, 100% { opacity: 1; }
+  97% { opacity: 0.72; }
+}
+
+.vending__shelf {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--gap-2);
+}
+
+.vending__drink {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  padding: var(--gap-3) 4px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+
+.vending__drink:hover:not(:disabled) {
+  border-color: var(--amber);
+}
+
+.vending__drink:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.vending__drink.is-selected {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.vending__drinklabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.vending__drinkprice {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-faint);
+}
+
+.vending__mediations {
+  min-height: 132px;
+  border: var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ink);
+  padding: var(--gap-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2);
+  justify-content: center;
+}
+
+.vending__mediation {
+  animation: mediate-in 320ms var(--ease-out);
+}
+
+@keyframes mediate-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vending__term {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  margin: 4px 0;
+}
+
+.vending__medline {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+.vending__return {
+  display: flex;
+  gap: var(--gap-4);
+  align-items: center;
+  animation: mediate-in 300ms var(--ease-out);
+}
+
+.vending__can {
+  width: 64px;
+  height: 92px;
+  border: 1px solid var(--amber);
+  border-radius: 6px;
+  background: linear-gradient(90deg, #23201a 0%, #3a332a 50%, #23201a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.vending__can span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--amber);
+}
+
+.vending__can ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.vending__can li {
+  font-family: var(--font-mono);
+  font-size: 4px;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.vending__returnline {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.vending__demand {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  padding: var(--gap-4);
+  background: var(--panel-2);
+  border: 1px solid var(--alert-dim);
+  border-radius: var(--radius);
+  color: var(--alert);
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
+}
+
+.vending__demand:hover:not(:disabled) {
+  border-color: var(--alert);
+  background: rgba(194, 84, 58, 0.08);
+}
+
+.vending__demand:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.vending__grille {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.vending__grille span {
+  width: 18px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 1px;
+}
+
+@media (max-width: 640px) {
+  .vending__shelf {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

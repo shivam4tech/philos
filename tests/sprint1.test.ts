@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { parseHash, routeToHash, type Route } from '@/router/router'
 import { InstitutionEngine } from '@/institution/engine'
+import { INSTITUTION_MESSAGES } from '@/institution/messages'
 import { isEligible, selectEffect, routeInScope } from '@/contamination/engine'
 import { CONTAMINATION_BY_ID } from '@/contamination/definitions'
 import { emptyRecord, type ResearchRecord } from '@/state/persistence'
@@ -70,7 +71,7 @@ describe('institution engine', () => {
     const engine = new InstitutionEngine()
     const message = engine.emit('contradiction', 1_000)
     expect(message).toBeTruthy()
-    expect(message).toMatch(/CONTRADICTION|RESOLVE THE CONTRADICTION/)
+    expect(INSTITUTION_MESSAGES.contradiction).toContain(message)
   })
 
   it('blocks repeat emissions within the cooldown', () => {

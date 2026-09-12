@@ -8,7 +8,7 @@ import {
   getMachine,
   machinesInZone,
 } from '@/machines/registry'
-import { isComponentImplemented } from '@/machines/machineComponents'
+import { isComponentImplemented, getMachineComponent } from '@/machines/machineComponents'
 import { CONTAMINATION_EFFECTS } from '@/contamination/definitions'
 
 describe('machine registry integrity', () => {
@@ -59,10 +59,12 @@ describe('machine registry integrity', () => {
     expect(machinesInZone('restricted')).toHaveLength(1)
   })
 
-  it('implemented components are tracked against the registry', () => {
-    // During Phase 0 nothing is implemented; every key must resolve (fallback)
+  it('sprint-2 apparatuses are implemented; every key resolves via the component map', async () => {
+    const implemented = ['cm-001-will', 'cm-002-desire', 'cm-003-vending', 'cm-004-broken-tool', 'cm-005-bracket', 'cm-006-again']
     for (const m of MACHINES) {
-      expect(isComponentImplemented(m.componentKey)).toBe(false)
+      expect(isComponentImplemented(m.componentKey)).toBe(implemented.includes(m.componentKey))
+      // resolution must never fail — fallback = offline apparatus
+      expect(() => getMachineComponent(m.componentKey)).not.toThrow()
     }
   })
 
